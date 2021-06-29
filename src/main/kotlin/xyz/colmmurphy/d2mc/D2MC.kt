@@ -12,6 +12,8 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.NullPointerException
+import xyz.colmmurphy.d2mc.listeners.ChatListener
+import xyz.colmmurphy.d2mc.listeners.PlayerJoinLeaveListener
 
 class D2MC : JavaPlugin() {
 
