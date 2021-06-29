@@ -7,6 +7,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import xyz.colmmurphy.d2mc.D2MC
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PlayerJoinLeaveListener : Listener {
     @EventHandler
@@ -14,6 +16,8 @@ class PlayerJoinLeaveListener : Listener {
         if (e.player.name.equals("bstan", ignoreCase = true)) {
             broadcast("Bstan")
         }
+        val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        D2MC.webhook.send("**[$time]** ${e.player.name} joined the game")
     }
 
     @EventHandler
@@ -21,6 +25,8 @@ class PlayerJoinLeaveListener : Listener {
         if (e.player.name.equals("bstan", ignoreCase = true)) {
             broadcast("Bstan")
         }
+        val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        D2MC.webhook.send("**[$time]** ${e.player.name} left the game")
     }
 
     private fun broadcast(s: String) = D2MC.server.broadcast(Component.text(s))
