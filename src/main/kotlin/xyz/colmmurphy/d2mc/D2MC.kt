@@ -1,5 +1,6 @@
 package xyz.colmmurphy.d2mc
 
+import club.minnced.discord.webhook.WebhookClient
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
@@ -7,12 +8,16 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.cache.CacheFlag
+import net.kyori.adventure.text.Component
+import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.NullPointerException
 
 class D2MC : JavaPlugin() {
 
     companion object {
+        lateinit var server: org.bukkit.Server
+
         lateinit var guildId: String
         lateinit var channelId: String
 
@@ -20,9 +25,11 @@ class D2MC : JavaPlugin() {
         lateinit var chnl: TextChannel
 
         lateinit var jda: JDA
+        lateinit var webhook: WebhookClient
     }
 
     override fun onEnable() {
+        D2MC.server = this.server
         // config stuff
         this.saveDefaultConfig()
         val config = this.config
@@ -52,8 +59,20 @@ class D2MC : JavaPlugin() {
             .awaitReady()
         println("[D2MC] successfully logged into discord as ${jda.selfUser.name}#${jda.selfUser.discriminator}")
 
-        gld = jda.getGuildById(guildId)!!
-        chnl = gld.getTextChannelById(channelId)!!
+        try {
+            gld = jda.getGuildById(guildId)!!
+            chnl = gld.getTextChannelById(channelId)!!
+        } catch (e: NullPointerException) {
+            println("[D2MC] Couldn't find a Discord server or channel with the ID's provided in config.yml\n" +
+                "server ID: ${guildId}\nchannel ID: $channelId")
+            kotlin.system.exitProcess(1)
+        }
+
+        // Create a webhook and send a message with it
+        chnl.createWebhook("mc.colmmurphy.xyz").queue { createdWebhook ->
+            webhook = WebhookClient.withUrl(createdWebhook.url)
+            webhook.send("Server is online")
+        }
 
         chnl.sendMessage("Server is online")
             .queue()
