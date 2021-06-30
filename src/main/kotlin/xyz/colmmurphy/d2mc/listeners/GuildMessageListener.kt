@@ -10,7 +10,7 @@ class GuildMessageListener : ListenerAdapter() {
     override fun onGuildMessageReceived(e: GuildMessageReceivedEvent) {
         if (e.message.channel.id != D2MC.channelId || e.message.author.isBot || e.isWebhookMessage) return
         D2MC.server.broadcast(Component.text(
-            "${ChatColor.AQUA}[Discord] ${ChatColor.UNDERLINE}<${e.message.author.name}> ${ChatColor.RESET}${e.message.contentStripped}")
+            "${ChatColor.AQUA}[Discord] <${e.message.author.name}>${ChatColor.RESET} ${e.message.contentStripped}")
         )
     }
 }

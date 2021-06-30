@@ -56,7 +56,7 @@ class D2MC : JavaPlugin() {
                 URL("https://api.mojang.com/users/profiles/minecraft/$name").openStream())
             val json1 = reader1.readText()
             reader1.close()
-            val uuid = json1.substringAfter("\"id\":").substringBefore("\"}")
+            val uuid = json1.substringAfter("\"id\":\"").substringBefore("\"}")
 
             val reader2 = InputStreamReader(
                 URL("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false").openStream())
@@ -119,12 +119,6 @@ class D2MC : JavaPlugin() {
             webhook = createdWebhook
             webhookClient = WebhookClient.withUrl(createdWebhook.url)
             webhookClient.send(":green_circle: Server is online :green_circle:")
-            webhookClient.send(
-                WebhookMessageBuilder()
-                    .setUsername("test")
-                    .setAvatarUrl(jda.selfUser.avatarUrl)
-                    .build()
-            )
         }
 
     }
