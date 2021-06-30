@@ -17,6 +17,8 @@ import java.lang.NullPointerException
 import java.net.URL
 import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
+import xyz.colmmurphy.d2mc.listeners.ChatListener
+import xyz.colmmurphy.d2mc.listeners.PlayerJoinLeaveListener
 
 class D2MC : JavaPlugin() {
 
@@ -37,6 +39,8 @@ class D2MC : JavaPlugin() {
 
     override fun onEnable() {
         D2MC.server = this.server
+        server.pluginManager.registerEvents(ChatListener(), this)
+        server.pluginManager.registerEvents(PlayerJoinLeaveListener(), this)
         // config stuff
         this.saveDefaultConfig()
         val config = this.config
