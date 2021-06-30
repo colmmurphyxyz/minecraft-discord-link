@@ -18,7 +18,13 @@ class ChatListener : Listener {
         val builder = WebhookMessageBuilder()
             .setUsername(e.player.name)
             .setAvatarUrl(D2MC.playerAvatars[e.player.name])
-            .setContent("**[$timeOfMessage]** ${e.message}")
+            .setContent("**[$timeOfMessage]** ${e.message.sanitised()}")
         D2MC.webhookClient.send(builder.build())
+    }
+
+    private fun String.sanitised(): String {
+        val str = this
+        str.replace("@", "")
+        return this
     }
 }
