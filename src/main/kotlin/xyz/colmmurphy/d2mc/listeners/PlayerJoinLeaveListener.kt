@@ -17,7 +17,7 @@ class PlayerJoinLeaveListener : Listener {
             broadcast("Bstan")
         }
         val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-        D2MC.webhook.send("**[$time]** ${e.player.name} joined the game")
+        D2MC.webhookClient.send("**[$time]** ${e.player.name} joined the game")
     }
 
     @EventHandler
@@ -26,7 +26,7 @@ class PlayerJoinLeaveListener : Listener {
             broadcast("Bstan")
         }
         val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-        D2MC.webhook.send("**[$time]** ${e.player.name} left the game")
+        D2MC.webhookClient.send("**[$time]** ${e.player.name} left the game")
     }
 
     private fun broadcast(s: String) = D2MC.server.broadcast(Component.text(s))
