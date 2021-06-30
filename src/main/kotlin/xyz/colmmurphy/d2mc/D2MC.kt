@@ -18,6 +18,7 @@ import java.net.URL
 import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
 import xyz.colmmurphy.d2mc.listeners.ChatListener
+import xyz.colmmurphy.d2mc.listeners.CommandListener
 import xyz.colmmurphy.d2mc.listeners.PlayerJoinLeaveListener
 import java.io.InputStreamReader
 
@@ -99,6 +100,7 @@ class D2MC : JavaPlugin() {
             .disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS,
                 CacheFlag.ONLINE_STATUS)
             .addEventListeners(GuildMessageListener())
+            .addEventListeners(CommandListener())
             .build()
             .awaitReady()
         println("[D2MC] successfully logged into discord as ${jda.selfUser.name}#${jda.selfUser.discriminator}")
