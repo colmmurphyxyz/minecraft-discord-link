@@ -19,6 +19,7 @@ import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
 import xyz.colmmurphy.d2mc.listeners.ChatListener
 import xyz.colmmurphy.d2mc.listeners.PlayerJoinLeaveListener
+import java.io.InputStreamReader
 
 class D2MC : JavaPlugin() {
 
@@ -35,6 +36,36 @@ class D2MC : JavaPlugin() {
         lateinit var jda: JDA
         lateinit var webhook: Webhook
         lateinit var webhookClient: WebhookClient
+
+        val playerAvatars = HashMap<String, String>()
+
+        fun addAvatar(player: org.bukkit.entity.Player) = addAvatar(player.name)
+
+        fun addAvatar(name: String) {
+            playerAvatars[name] = getAvatarUrl(name)
+        }
+
+        fun removeAvatar(player: org.bukkit.entity.Player) = removeAvatar(player.name)
+
+        fun removeAvatar(name: String) {
+            playerAvatars.remove(name)
+        }
+
+        private fun getAvatarUrl(name: String): String {
+            val reader1 = InputStreamReader(
+                URL("https://api.mojang.com/users/profiles/minecraft/$name").openStream())
+            val json1 = reader1.readText()
+            reader1.close()
+            val uuid = json1.substringAfter("\"id\":").substringBefore("\"}")
+
+            val reader2 = InputStreamReader(
+                URL("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false").openStream())
+            val json2 = reader2.readText()
+            reader2.close()
+            val texture = json2.substringAfter("\"value\" : \"").substringBefore("\"")
+            //val signature = json2.substringAfter("\"signature\" : \"").substringBefore("\"")
+            return "https://crafatar.com/avatars/${uuid}.png?size=128&overlay#${texture}"
+        }
     }
 
     override fun onEnable() {
@@ -87,7 +118,7 @@ class D2MC : JavaPlugin() {
             .queue { createdWebhook ->
             webhook = createdWebhook
             webhookClient = WebhookClient.withUrl(createdWebhook.url)
-            webhookClient.send("Server is online")
+            webhookClient.send(":green_circle: Server is online :green_circle:")
             webhookClient.send(
                 WebhookMessageBuilder()
                     .setUsername("test")
@@ -99,6 +130,7 @@ class D2MC : JavaPlugin() {
     }
 
     override fun onDisable() {
+        webhookClient.send(":octagonal_sign: Server is offline :octagonal_sign:")
         println("[D2MC] Shutting down D2MC")
         webhook.delete().queue { _ -> println("[D2MC] Deleted webhook") }
     }

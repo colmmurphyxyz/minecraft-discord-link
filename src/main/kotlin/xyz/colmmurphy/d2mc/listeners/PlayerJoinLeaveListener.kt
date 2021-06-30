@@ -13,8 +13,9 @@ import java.time.format.DateTimeFormatter
 class PlayerJoinLeaveListener : Listener {
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
+        D2MC.addAvatar(e.player.name)
         if (e.player.name.equals("bstan", ignoreCase = true)) {
-            broadcast("Bstan")
+            D2MC.server.broadcast(Component.text("Bstan"))
         }
         val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
         D2MC.webhookClient.send("**[$time]** ${e.player.name} joined the game")
@@ -22,12 +23,11 @@ class PlayerJoinLeaveListener : Listener {
 
     @EventHandler
     fun onPlayerLeave(e: PlayerQuitEvent) {
+        D2MC.removeAvatar(e.player.name)
         if (e.player.name.equals("bstan", ignoreCase = true)) {
-            broadcast("Bstan")
+            D2MC.server.broadcast(Component.text("Bstan"))
         }
         val time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
         D2MC.webhookClient.send("**[$time]** ${e.player.name} left the game")
     }
-
-    private fun broadcast(s: String) = D2MC.server.broadcast(Component.text(s))
 }
