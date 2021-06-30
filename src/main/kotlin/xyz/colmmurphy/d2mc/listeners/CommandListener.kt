@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 class CommandListener : ListenerAdapter() {
 
     override fun onGuildMessageReceived(e: GuildMessageReceivedEvent) {
-        if (e.channel.id != D2MC.Companion.channelId || e.isWebhookMessage || e.message.author.isBot) return
+        if (e.channel.id != D2MC.channelId || e.isWebhookMessage || e.message.author.isBot) return
         val msg = e.message.contentRaw.split(" ")
         val command: Commands = Commands.findByAlias(msg[0]) ?: return;
 
@@ -37,15 +37,14 @@ class CommandListener : ListenerAdapter() {
                     EmbedBuilder()
                         .setColor(Color.blue)
                         .setTitle("There are currently **${onlinePlayers.size}** players online")
-                        .addField("", onlinePlayers.joinToString("\n"), true)
+                        .addField("", onlinePlayers.joinToString { it -> it.name + "\n" }, true)
                         .build()
                 ).queue()
             }
 
             Commands.TPS -> {
                 e.channel.sendTyping().queue()
-                val tps = D2MC.server.tps
-                val tpsRounded = tps.map {
+                val tpsRounded = D2MC.server.tps.map {
                     (it * 100).roundToInt().div(100.0)
                 }
                 e.channel.sendMessageEmbeds(
@@ -53,7 +52,7 @@ class CommandListener : ListenerAdapter() {
                         .setTitle("TPS")
                         .setColor(when (tpsRounded[0]) {
                             in 17.5..20.0 -> Color.green
-                            in 17.5..15.5 -> Color.orange
+                            in 15.5..17.5 -> Color.orange
                             else -> Color.red
                         })
                         .addField("",
