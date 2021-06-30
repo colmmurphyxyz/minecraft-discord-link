@@ -99,7 +99,7 @@ enum class Commands (val aliases: List<String>, val description: String = ".") {
         val helpMenu: () -> String = {
             var str: String = ""
             for (i in Commands.values()) {
-                str += "**${i.name}** - ${i.description}"
+                str += "**${i.name}** - ${i.description}\n"
             }
             str
         }
