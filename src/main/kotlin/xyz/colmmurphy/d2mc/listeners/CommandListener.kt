@@ -48,7 +48,7 @@ class CommandListener : ListenerAdapter() {
                     EmbedBuilder()
                         .setColor(Color.blue)
                         .setTitle("There are currently **${onlinePlayers.size}** players online")
-                        .addField("", onlinePlayers.joinToString { it -> it.name + "\n" }, true)
+                        .addField("", onlinePlayers.joinToString { "${it.name}\n" }, true)
                         .build()
                 ).queue()
             }
