@@ -2,6 +2,7 @@ package xyz.colmmurphy.d2mc
 
 import club.minnced.discord.webhook.WebhookClient
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
+import com.google.gson.Gson
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.*
@@ -19,6 +20,8 @@ import java.net.URL
 import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
 import java.io.InputStreamReader
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class D2MC : JavaPlugin() {
 
@@ -78,6 +81,12 @@ class D2MC : JavaPlugin() {
 
         private fun getAvatarUrlBedrock(name: String): String {
             return("https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/08/Bedrock_%28texture%29_JE2_BE2.png/revision/latest?cb=20201001115713")
+        }
+
+        val gson = Gson()
+        private val reader = Files.newBufferedReader(Paths.get("resources/linkedaccounts.json"))
+        val linkedAccounts: HashMap<*, *> = gson.fromJson(reader, HashMap::class.java).also {
+            reader.close()
         }
     }
 
