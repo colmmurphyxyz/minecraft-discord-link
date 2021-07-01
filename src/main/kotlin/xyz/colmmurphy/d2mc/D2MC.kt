@@ -11,15 +11,12 @@ import net.kyori.adventure.text.Component
 import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.colmmurphy.d2mc.listeners.GuildMessageListener
+import xyz.colmmurphy.d2mc.listeners.*
 import java.io.InputStream
 import java.lang.NullPointerException
 import java.net.URL
 import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
-import xyz.colmmurphy.d2mc.listeners.ChatListener
-import xyz.colmmurphy.d2mc.listeners.CommandListener
-import xyz.colmmurphy.d2mc.listeners.PlayerJoinLeaveListener
 import java.io.InputStreamReader
 
 class D2MC : JavaPlugin() {
@@ -73,6 +70,7 @@ class D2MC : JavaPlugin() {
         D2MC.server = this.server
         server.pluginManager.registerEvents(ChatListener(), this)
         server.pluginManager.registerEvents(PlayerJoinLeaveListener(), this)
+        server.pluginManager.registerEvents(PlayerDeathListener(), this)
         // config stuff
         this.saveDefaultConfig()
         val config = this.config
