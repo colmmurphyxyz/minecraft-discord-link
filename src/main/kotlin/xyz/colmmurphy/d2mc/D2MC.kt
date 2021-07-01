@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.colmmurphy.d2mc.listeners.*
+import java.io.IOException
 import java.io.InputStream
 import java.lang.NullPointerException
 import java.net.URL
@@ -40,7 +41,11 @@ class D2MC : JavaPlugin() {
         fun addAvatar(player: org.bukkit.entity.Player) = addAvatar(player.name)
 
         fun addAvatar(name: String) {
-            playerAvatars[name] = getAvatarUrl(name)
+            if (name.startsWith("*")) { // if the player is joining from Bedrock edition
+                playerAvatars[name] = getAvatarUrlBedrock(name)
+            } else {
+                playerAvatars[name] = getAvatarUrl(name)
+            }
         }
 
         fun removeAvatar(player: org.bukkit.entity.Player) = removeAvatar(player.name)
@@ -50,19 +55,29 @@ class D2MC : JavaPlugin() {
         }
 
         private fun getAvatarUrl(name: String): String {
-            val reader1 = InputStreamReader(
-                URL("https://api.mojang.com/users/profiles/minecraft/$name").openStream())
-            val json1 = reader1.readText()
-            reader1.close()
-            val uuid = json1.substringAfter("\"id\":\"").substringBefore("\"}")
+            try {
+                val reader1 = InputStreamReader(
+                    URL("https://api.mojang.com/users/profiles/minecraft/$name").openStream()
+                )
+                val json1 = reader1.readText()
+                reader1.close()
+                val uuid = json1.substringAfter("\"id\":\"").substringBefore("\"}")
 
-            val reader2 = InputStreamReader(
-                URL("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false").openStream())
-            val json2 = reader2.readText()
-            reader2.close()
-            val texture = json2.substringAfter("\"value\" : \"").substringBefore("\"")
-            //val signature = json2.substringAfter("\"signature\" : \"").substringBefore("\"")
-            return "https://crafatar.com/avatars/${uuid}.png?size=128&overlay#${texture}"
+                val reader2 = InputStreamReader(
+                    URL("https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false").openStream()
+                )
+                val json2 = reader2.readText()
+                reader2.close()
+                val texture = json2.substringAfter("\"value\" : \"").substringBefore("\"")
+                //val signature = json2.substringAfter("\"signature\" : \"").substringBefore("\"")
+                return "https://crafatar.com/avatars/${uuid}.png?size=128&overlay#${texture}"
+            } catch (e: IOException) {
+                return("https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png")
+            }
+        }
+
+        private fun getAvatarUrlBedrock(name: String): String {
+            return("https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/08/Bedrock_%28texture%29_JE2_BE2.png/revision/latest?cb=20201001115713")
         }
     }
 
