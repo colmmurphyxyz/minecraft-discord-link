@@ -10,9 +10,10 @@ class GuildMessageListener : ListenerAdapter() {
     override fun onGuildMessageReceived(e: GuildMessageReceivedEvent) {
         if (e.message.channel.id != D2MC.channelId || e.message.author.isBot || e.isWebhookMessage) return
         val nameColor = ChatColor.of(e.member!!.color) ?: ChatColor.AQUA
+        val name = e.member!!.nickname ?: e.author.name
         D2MC.server.broadcast(Component.text(
             "${ChatColor.AQUA}[Discord]" +
-                    "${nameColor}<${e.member!!.nickname}> " +
+                    "${ChatColor.RESET}${nameColor}<${name}> " +
                     "${ChatColor.RESET}${e.message.contentStripped}")
         )
     }
