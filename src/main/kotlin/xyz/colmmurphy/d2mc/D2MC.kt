@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.colmmurphy.d2mc.listeners.*
+import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
 import java.lang.NullPointerException
@@ -44,10 +45,14 @@ class D2MC : JavaPlugin() {
         fun addAvatar(player: org.bukkit.entity.Player) = addAvatar(player.name)
 
         fun addAvatar(name: String) {
-            if (name.startsWith("*")) { // if the player is joining from Bedrock edition
-                playerAvatars[name] = getAvatarUrlBedrock(name)
+            if (!linkedAccounts[name].isNullOrEmpty()) {
+                playerAvatars[name] = gld.getMemberById(linkedAccounts[name]!!)!!.user.avatarUrl!!
             } else {
-                playerAvatars[name] = getAvatarUrl(name)
+                if (name.startsWith("*")) { // if the player is joining from Bedrock edition
+                    playerAvatars[name] = getAvatarUrlBedrock(name)
+                } else {
+                    playerAvatars[name] = getAvatarUrl(name)
+                }
             }
         }
 
@@ -83,10 +88,16 @@ class D2MC : JavaPlugin() {
             return("https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/08/Bedrock_%28texture%29_JE2_BE2.png/revision/latest?cb=20201001115713")
         }
 
+        // load linked accounts from linkedaccounts.json file
         val gson = Gson()
         private val reader = Files.newBufferedReader(Paths.get("resources/linkedaccounts.json"))
-        val linkedAccounts: HashMap<*, *> = gson.fromJson(reader, HashMap::class.java).also {
+        val linkedAccounts: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let {
             reader.close()
+            val newMap = HashMap<String, String>()
+            it.forEach { entry: Map.Entry<*, *> ->
+                newMap[entry.key as String] = entry.value as String
+            }
+            newMap
         }
     }
 
@@ -150,6 +161,9 @@ class D2MC : JavaPlugin() {
     override fun onDisable() {
         webhookClient.send(":octagonal_sign: Server is offline :octagonal_sign:")
         println("[D2MC] Shutting down D2MC")
-        webhook.delete().queue { _ -> println("[D2MC] Deleted webhook") }
+        webhook.delete().queue { println("[D2MC] Deleted webhook") }
+
+        // write the `linkedAccounts` map to the linkedaccounts.json file
+        gson.toJson(linkedAccounts, FileWriter("resources/linkedaccounts.json"))
     }
 }

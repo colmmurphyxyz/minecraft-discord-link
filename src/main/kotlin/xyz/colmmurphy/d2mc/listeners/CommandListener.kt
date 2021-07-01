@@ -30,6 +30,17 @@ class CommandListener : ListenerAdapter() {
                 e.channel.sendMessage(D2MC.ipAddress).queue()
             }
 
+            Commands.LINK -> {
+                if (msg[1].isNullOrEmpty()) {
+                    e.channel.sendMessage("You need to provide a Minecraft username")
+                        .queue()
+                    return
+                }
+                D2MC.linkedAccounts[msg[1]] = e.author.id
+                e.channel.sendMessage("Linked your discord account with the minecraft username ${msg[1]}")
+                    .queue()
+            }
+
             Commands.PLAYERLIST -> {
                 e.channel.sendTyping().queue()
                 val onlinePlayers = D2MC.server.onlinePlayers
@@ -72,6 +83,10 @@ enum class Commands (val aliases: List<String>, val description: String = ".") {
     IP(
         listOf("ip", "server"),
         "Shows the server's ip address"),
+    LINK(
+        listOf("link", "connect"),
+        "Link your discord and minecraft accounts"
+    ),
     PLAYERLIST(
         listOf("playerlist", "players", "online"),
         "Shows all players currently online"),

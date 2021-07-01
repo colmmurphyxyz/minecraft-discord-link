@@ -15,6 +15,7 @@ class ChatListener : Listener {
     @EventHandler
     fun onMessage(e: AsyncPlayerChatEvent) {
         val timeOfMessage = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        val avatar = getAvatar(e.player.name)
         val builder = WebhookMessageBuilder()
             .setUsername(e.player.name)
             .setAvatarUrl(D2MC.playerAvatars[e.player.name])
@@ -26,5 +27,13 @@ class ChatListener : Listener {
         val str = this
         str.replace("@", "")
         return this
+    }
+
+    private fun getAvatar(name: String): String {
+        return try {
+            D2MC.linkedAccounts[name] as String
+        } catch (e: Exception) {
+            D2MC.playerAvatars[name]!!
+        }
     }
 }
