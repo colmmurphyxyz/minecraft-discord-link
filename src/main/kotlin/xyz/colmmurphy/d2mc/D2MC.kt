@@ -15,9 +15,7 @@ import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.colmmurphy.d2mc.listeners.*
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.lang.NullPointerException
 import java.net.URL
 import java.nio.channels.Channels
@@ -86,43 +84,23 @@ class D2MC : JavaPlugin() {
             return("https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/08/Bedrock_%28texture%29_JE2_BE2.png/revision/latest?cb=20201001115713")
         }
 
-<<<<<<< Updated upstream
         // load linked accounts from linkedaccounts.json file
         val gson = Gson().also {
-		val file = File("linkedaccounts.json")
+		val file = File("D2MC/linkedaccounts.json")
 		file.createNewFile()
-		it
+        it
 	}
-        private val reader = Files.newBufferedReader(Paths.get("linkedaccounts.json"))
-        val linkedAccounts: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let {
-/*           
- reader.close()
-            val newMap = HashMap<String, String>()
-            it.forEach { entry: Map.Entry<*, *> ->
-                newMap[entry.key as String] = entry.value as String
-            }
-            if (it != null) newMap else HashMap<String, String>()
-*/
-		HashMap<String, String>()
-=======
-        // load avatar URL's from json file
-        val gson = Gson().let {
-            val file = File("avatarurls.json")
-            if (!file.exists()) file.createNewFile()
-            it
-        }
-        private val reader = Files.newBufferedReader(Paths.get("avatarurls.json"))
+        private val reader = Files.newBufferedReader(Paths.get("D2MC/linkedaccounts.json"))
         val avatarUrls: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let foo@{
             reader.close()
-            it?.let bar@{
+            if (it != null) {
                 val newMap = HashMap<String, String>()
                 it.forEach { entry: Map.Entry<*, *> ->
                     newMap[entry.key as String] = entry.value as String
                 }
                 return@foo newMap
             }
-            HashMap<String, String>()
->>>>>>> Stashed changes
+            return@foo HashMap<String, String>()
         }
     }
 
@@ -189,6 +167,6 @@ class D2MC : JavaPlugin() {
         webhook.delete().queue { println("[D2MC] Deleted webhook") }
 
         // write the `linkedAccounts` map to the linkedaccounts.json file
-        gson.toJson(avatarUrls, FileWriter("avatarurls.json"))
+        gson.toJson(avatarUrls, FileWriter("D2MC/linkedaccounts.json"))
     }
 }

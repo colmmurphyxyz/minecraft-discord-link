@@ -31,7 +31,7 @@ class CommandListener : ListenerAdapter() {
             }
 
             Commands.LINK -> {
-                if (msg[1].isNullOrEmpty()) {
+                if (msg[1].isEmpty()) {
                     e.channel.sendMessage("You need to provide a Minecraft username")
                         .queue()
                     return
