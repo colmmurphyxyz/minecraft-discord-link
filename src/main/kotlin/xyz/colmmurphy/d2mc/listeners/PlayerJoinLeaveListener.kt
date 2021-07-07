@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 class PlayerJoinLeaveListener : Listener {
     @EventHandler
-    fun onPlayerJoin(e: PlayerJoinEvent) = runBlocking {
+    fun onPlayerJoin(e: PlayerJoinEvent) {
         D2MC.addAvatar(e.player.name)
         if (e.player.name.equals("bstan", ignoreCase = true)) {
             D2MC.server.broadcast(Component.text("Bstan"))

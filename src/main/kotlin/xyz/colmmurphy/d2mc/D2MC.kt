@@ -47,7 +47,7 @@ class D2MC : JavaPlugin() {
             }
         }
 
-        suspend fun addAvatar(name: String) {
+        fun addAvatar(name: String) {
             playerAvatars[name] =
                 gld.getMemberById(avatarUrls[name]!!)!!.user.avatarUrl ?: getAvatarUrl(name)
         }
