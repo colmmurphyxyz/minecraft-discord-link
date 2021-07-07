@@ -49,7 +49,11 @@ class D2MC : JavaPlugin() {
 
         fun addAvatar(name: String) {
             playerAvatars[name] =
-                gld.getMemberById(avatarUrls[name]!!)!!.user.avatarUrl ?: getAvatarUrl(name)
+                try {
+                    gld.getMemberById(avatarUrls[name]!!)!!.user.avatarUrl!!
+                } catch (e: NullPointerException) {
+                    getAvatarUrl(name)
+                }
         }
 
         fun removeAvatar(player: org.bukkit.entity.Player) = removeAvatar(player.name)
