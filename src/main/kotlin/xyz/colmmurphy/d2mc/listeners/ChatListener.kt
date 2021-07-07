@@ -31,9 +31,9 @@ class ChatListener : Listener {
 
     private fun getAvatar(name: String): String {
         return try {
-            D2MC.linkedAccounts[name] as String
+            D2MC.avatarUrls[name]!!
         } catch (e: Exception) {
-            D2MC.playerAvatars[name]!!
+            "https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png"
         }
     }
 }

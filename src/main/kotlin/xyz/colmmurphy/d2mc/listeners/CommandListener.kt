@@ -36,7 +36,7 @@ class CommandListener : ListenerAdapter() {
                         .queue()
                     return
                 }
-                D2MC.linkedAccounts[msg[1]] = e.author.id
+                D2MC.avatarUrls[msg[1].toLowerCase()] = e.author.id
                 e.channel.sendMessage("Linked your discord account with the minecraft username ${msg[1]}")
                     .queue()
             }

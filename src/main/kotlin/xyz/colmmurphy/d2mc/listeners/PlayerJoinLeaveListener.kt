@@ -1,5 +1,7 @@
 package xyz.colmmurphy.d2mc.listeners
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -12,7 +14,7 @@ import java.time.format.DateTimeFormatter
 
 class PlayerJoinLeaveListener : Listener {
     @EventHandler
-    fun onPlayerJoin(e: PlayerJoinEvent) {
+    suspend fun onPlayerJoin(e: PlayerJoinEvent) = runBlocking {
         D2MC.addAvatar(e.player.name)
         if (e.player.name.equals("bstan", ignoreCase = true)) {
             D2MC.server.broadcast(Component.text("Bstan"))

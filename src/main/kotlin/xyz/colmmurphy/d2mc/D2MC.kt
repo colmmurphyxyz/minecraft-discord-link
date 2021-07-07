@@ -1,8 +1,10 @@
 package xyz.colmmurphy.d2mc
 
 import club.minnced.discord.webhook.WebhookClient
-import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.*
@@ -13,7 +15,6 @@ import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.colmmurphy.d2mc.listeners.*
-import java.io.*
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
@@ -21,7 +22,6 @@ import java.lang.NullPointerException
 import java.net.URL
 import java.nio.channels.Channels
 import java.nio.channels.ReadableByteChannel
-import java.io.InputStreamReader
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -43,18 +43,15 @@ class D2MC : JavaPlugin() {
 
         val playerAvatars = HashMap<String, String>()
 
-        fun addAvatar(player: org.bukkit.entity.Player) = addAvatar(player.name)
-
-        fun addAvatar(name: String) {
-            if (!linkedAccounts[name].isNullOrEmpty()) {
-                playerAvatars[name] = gld.getMemberById(linkedAccounts[name]!!)!!.user.avatarUrl!!
-            } else {
-                if (name.startsWith("*")) { // if the player is joining from Bedrock edition
-                    playerAvatars[name] = getAvatarUrlBedrock(name)
-                } else {
-                    playerAvatars[name] = getAvatarUrl(name)
-                }
+        suspend fun addAvatar(player: org.bukkit.entity.Player) {
+            coroutineScope {
+                launch { addAvatar(player.name) }
             }
+        }
+
+        suspend fun addAvatar(name: String) {
+            playerAvatars[name] =
+                gld.getMemberById(avatarUrls[name]!!)!!.user.avatarUrl ?: getAvatarUrl(name)
         }
 
         fun removeAvatar(player: org.bukkit.entity.Player) = removeAvatar(player.name)
@@ -89,6 +86,7 @@ class D2MC : JavaPlugin() {
             return("https://static.wikia.nocookie.net/minecraft_gamepedia/images/0/08/Bedrock_%28texture%29_JE2_BE2.png/revision/latest?cb=20201001115713")
         }
 
+<<<<<<< Updated upstream
         // load linked accounts from linkedaccounts.json file
         val gson = Gson().also {
 		val file = File("linkedaccounts.json")
@@ -106,6 +104,25 @@ class D2MC : JavaPlugin() {
             if (it != null) newMap else HashMap<String, String>()
 */
 		HashMap<String, String>()
+=======
+        // load avatar URL's from json file
+        val gson = Gson().let {
+            val file = File("avatarurls.json")
+            if (!file.exists()) file.createNewFile()
+            it
+        }
+        private val reader = Files.newBufferedReader(Paths.get("avatarurls.json"))
+        val avatarUrls: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let foo@{
+            reader.close()
+            it?.let bar@{
+                val newMap = HashMap<String, String>()
+                it.forEach { entry: Map.Entry<*, *> ->
+                    newMap[entry.key as String] = entry.value as String
+                }
+                return@foo newMap
+            }
+            HashMap<String, String>()
+>>>>>>> Stashed changes
         }
     }
 
@@ -172,6 +189,6 @@ class D2MC : JavaPlugin() {
         webhook.delete().queue { println("[D2MC] Deleted webhook") }
 
         // write the `linkedAccounts` map to the linkedaccounts.json file
-        gson.toJson(linkedAccounts, FileWriter("linkedaccounts.json"))
+        gson.toJson(avatarUrls, FileWriter("avatarurls.json"))
     }
 }
