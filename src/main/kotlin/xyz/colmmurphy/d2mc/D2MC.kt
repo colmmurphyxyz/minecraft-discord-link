@@ -85,12 +85,14 @@ class D2MC : JavaPlugin() {
         }
 
         // load linked accounts from linkedaccounts.json file
+        val path = File.createTempFile("temp", "orary").absolutePath.substringBeforeLast("/")
         val gson = Gson().also {
-		val file = File("linkedaccounts.json")
-		file.createNewFile()
-        it
-	}
-        private val reader = Files.newBufferedReader(Paths.get("linkedaccounts.json"))
+            println("foo")
+            val file = File("$path/linkedaccounts.json")
+		    file.createNewFile()
+            it
+	    }
+        private val reader = Files.newBufferedReader(Paths.get("$path/linkedaccounts.json"))
         val avatarUrls: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let foo@{
             reader.close()
             if (it != null) {
@@ -167,6 +169,6 @@ class D2MC : JavaPlugin() {
         webhook.delete().queue { println("[D2MC] Deleted webhook") }
 
         // write the `linkedAccounts` map to the linkedaccounts.json file
-        gson.toJson(avatarUrls, FileWriter("linkedaccounts.json"))
+        gson.toJson(avatarUrls, FileWriter("$path/linkedaccounts.json"))
     }
 }
