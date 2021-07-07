@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import org.bukkit.Server
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.colmmurphy.d2mc.listeners.*
+import java.io.*
 import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStream
@@ -89,15 +90,22 @@ class D2MC : JavaPlugin() {
         }
 
         // load linked accounts from linkedaccounts.json file
-        val gson = Gson()
+        val gson = Gson().also {
+		val file = File("linkedaccounts.json")
+		file.createNewFile()
+		it
+	}
         private val reader = Files.newBufferedReader(Paths.get("linkedaccounts.json"))
         val linkedAccounts: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let {
-            reader.close()
+/*           
+ reader.close()
             val newMap = HashMap<String, String>()
             it.forEach { entry: Map.Entry<*, *> ->
                 newMap[entry.key as String] = entry.value as String
             }
-            newMap
+            if (it != null) newMap else HashMap<String, String>()
+*/
+		HashMap<String, String>()
         }
     }
 
