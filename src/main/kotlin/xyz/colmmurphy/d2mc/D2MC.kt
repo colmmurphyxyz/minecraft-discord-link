@@ -85,7 +85,7 @@ class D2MC : JavaPlugin() {
         }
 
         // load linked accounts from linkedaccounts.json file
-        val path = File.createTempFile("temp", "orary").absolutePath.substringBeforeLast("/") + "/plugins/D2MC"
+        val path = "/home/pi/117/plugins/D2MC"
         val gson = Gson().also {
             println(path)
             val file = File("$path/linkedaccounts.json")
