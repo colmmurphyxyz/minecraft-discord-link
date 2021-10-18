@@ -30,6 +30,8 @@ class D2MC : JavaPlugin() {
 
         lateinit var ipAddress: String
 
+        lateinit var pluginPath: String
+
         lateinit var guildId: String
         lateinit var channelId: String
         lateinit var gld: Guild
@@ -89,13 +91,12 @@ class D2MC : JavaPlugin() {
         }
 
         // load linked accounts from linkedaccounts.json file
-        val path = "/home/pi/117/plugins/D2MC"
         val gson = Gson().also {
-            println(path)
-            val file = File("$path/linkedaccounts.json")
+            println(pluginPath)
+            val file = File("${D2MC.pluginPath}/linkedaccounts.json")
 		    file.createNewFile()
 	    }
-        private val reader = Files.newBufferedReader(Paths.get("$path/linkedaccounts.json"))
+        private val reader = Files.newBufferedReader(Paths.get("${D2MC.pluginPath}/linkedaccounts.json"))
         val avatarUrls: HashMap<String, String> = gson.fromJson(reader, HashMap::class.java).let foo@{
             reader.close()
             it?.let {
@@ -120,6 +121,7 @@ class D2MC : JavaPlugin() {
 
         val token: String
         try {
+            pluginPath = config.getString("plugin-path")!!
             guildId = config.getString("guild-id")!!
             channelId = config.getString("channel-id")!!
             token = config.getString("bot-token")!!
@@ -156,7 +158,7 @@ class D2MC : JavaPlugin() {
         }
 
         // Create a webhook and send a message with it
-        chnl.createWebhook("mc.colmmurphy.xyz")
+        chnl.createWebhook(ipAddress)
             .setAvatar(Icon.from(URL(jda.selfUser.avatarUrl).openStream()))
             .queue { createdWebhook ->
             webhook = createdWebhook
@@ -172,7 +174,7 @@ class D2MC : JavaPlugin() {
         webhook.delete().queue { println("[D2MC] Deleted webhook") }
 
         // write the `linkedAccounts` map to the linkedaccounts.json file
-        val writer = FileWriter("$path/linkedaccounts.json")
+        val writer = FileWriter("$pluginPath/linkedaccounts.json")
         gson.toJson(avatarUrls, writer)
         writer.close()
     }
